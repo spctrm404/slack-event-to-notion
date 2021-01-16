@@ -41,70 +41,66 @@ def message(payload):
     event = payload.get("event")
     eventChannel = event.get("channel")
     eventSubtype = event.get("subtype")
+    msgItem = event.get("message")
+    client_msg_id = msgItem.get("client_msg_id")
     if (
         eventSubtype == "message_changed"
         and eventChannel == environ["SLACK_CHANNEL_ID"]
+        and client_msg_id not in ignoreList
     ):
-        msgItem = event.get("message")
-        client_msg_id = str(msgItem.get("client_msg_id"))
-        if client_msg_id not in ignoreList:
-            ignoreList.append(client_msg_id)
-            if len(ignoreList) > 10:
-                ignoreList.pop(0)
-            postContentsCnt = 0
-            postContents = str(msgItem.get("text")).split("\n")
-            newPostRow = postCollection.collection.add_row()
-            for postContent in postContents:
-                if postContents != "":
-                    postText = newPostRow.children.add_new(TextBlock)
-                    postText.title = postContent
-                    postContentsCnt += 1
-                    if postContentsCnt == 1:
-                        newPostRow.ireum = postContent
-            if "ts" in msgItem:
-                permalink = slackClient.chat_getPermalink(
-                    channel=eventChannel, message_ts=msgItem.get("ts")
-                )
-                if permalink["ok"]:
-                    newPostRow.slack_url = str(permalink["permalink"]).split("?")[0]
-            postId = newPostRow.id
-            if "attachments" in msgItem:
-                linkIds = []
-                attachments = msgItem.get("attachments")
-                for atchItem in attachments:
-                    newLinkRow = linkCollection.collection.add_row()
-                    newLinkRow.translation = "번역없음"
-                    newLinkRow.related_posts = [postId]
-                    if "author_name" in atchItem:
-                        newLinkRow.author = str(atchItem.get("author_name"))
-                    if "original_url" in atchItem:
-                        newLinkRow.url = str(atchItem.get("original_url"))
-                    if "title" in atchItem:
-                        newLinkRow.ireum = str(atchItem.get("title"))
-                    if "service_icon" in atchItem:
-                        newLinkRow.set(
-                            "format.page_icon", str(atchItem.get("service_icon"))
-                        )
-                    if "image_url" in atchItem:
-                        newLinkRow.set(
-                            "format.page_cover", str(atchItem.get("image_url"))
-                        )
-                    elif "thumb_url" in atchItem:
-                        newLinkRow.set(
-                            "format.page_cover", str(atchItem.get("thumb_url"))
-                        )
-                    elif "service_icon" in atchItem:
-                        newLinkRow.set(
-                            "format.page_cover", str(atchItem.get("service_icon"))
-                        )
-                    if "text" in atchItem:
-                        linkContents = str(atchItem.get("text")).split("\n")
-                        for linkContent in linkContents:
-                            if linkContents != "":
-                                linkText = newLinkRow.children.add_new(TextBlock)
-                                linkText.title = linkContent
-                    linkIds.append(newLinkRow.id)
-                newPostRow.related_links = linkIds
+        ignoreList.append(client_msg_id)
+        if len(ignoreList) > 10:
+            ignoreList.pop(0)
+        postContentsCnt = 0
+        postContents = str(msgItem.get("text")).split("\n")
+        newPostRow = postCollection.collection.add_row()
+        for postContent in postContents:
+            if postContents != "":
+                postText = newPostRow.children.add_new(TextBlock)
+                postText.title = postContent
+                postContentsCnt += 1
+                if postContentsCnt == 1:
+                    newPostRow.ireum = postContent
+        if "ts" in msgItem:
+            permalink = slackClient.chat_getPermalink(
+                channel=eventChannel, message_ts=msgItem.get("ts")
+            )
+            if permalink["ok"]:
+                newPostRow.slack_url = str(permalink["permalink"]).split("?")[0]
+        postId = newPostRow.id
+        if "attachments" in msgItem:
+            linkIds = []
+            attachments = msgItem.get("attachments")
+            for atchItem in attachments:
+                newLinkRow = linkCollection.collection.add_row()
+                newLinkRow.translation = "번역없음"
+                newLinkRow.related_posts = [postId]
+                if "author_name" in atchItem:
+                    newLinkRow.author = str(atchItem.get("author_name"))
+                if "original_url" in atchItem:
+                    newLinkRow.url = str(atchItem.get("original_url"))
+                if "title" in atchItem:
+                    newLinkRow.ireum = str(atchItem.get("title"))
+                if "service_icon" in atchItem:
+                    newLinkRow.set(
+                        "format.page_icon", str(atchItem.get("service_icon"))
+                    )
+                if "image_url" in atchItem:
+                    newLinkRow.set("format.page_cover", str(atchItem.get("image_url")))
+                elif "thumb_url" in atchItem:
+                    newLinkRow.set("format.page_cover", str(atchItem.get("thumb_url")))
+                elif "service_icon" in atchItem:
+                    newLinkRow.set(
+                        "format.page_cover", str(atchItem.get("service_icon"))
+                    )
+                if "text" in atchItem:
+                    linkContents = str(atchItem.get("text")).split("\n")
+                    for linkContent in linkContents:
+                        if linkContents != "":
+                            linkText = newLinkRow.children.add_new(TextBlock)
+                            linkText.title = linkContent
+                linkIds.append(newLinkRow.id)
+            newPostRow.related_links = linkIds
 
 
 if __name__ == "__main__":
