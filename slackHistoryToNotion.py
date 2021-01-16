@@ -8,6 +8,14 @@ from dotenv import load_dotenv
 env_path = Path(".") / ".env"
 load_dotenv(dotenv_path=env_path)
 
+notionUrls = {
+    "post": "https://www.notion.so/prsmlab/2057ce5fa809459684ca8e51c4b6d461?v=c05502589aa34e10bb3004318c84916c",
+    "link": "https://www.notion.so/prsmlab/83b8a8e236cc48e0a5aefba419730411?v=00b41d9014234f5d80b4bb92b88ac5cd",
+}
+allowedSlackChannels = {
+    "material": "C01F9G7KL07"
+    # , "experiment": "C01ETM1P4BH"
+}
 notionPostProps = ["authored", "slack_url", "related_links", "ireum"]
 notionLinkProps = [
     "translation",
@@ -21,11 +29,11 @@ notionLinkProps = [
     "ireum",
 ]
 notionClient = NotionClient(token_v2=os.environ["NOTION_TOKEN"])
-postCollection = notionClient.get_collection_view(os.environ["POST_URL"])
-linkCollection = notionClient.get_collection_view(os.environ["LINK_URL"])
+postCollection = notionClient.get_collection_view(notionUrls["post"])
+linkCollection = notionClient.get_collection_view(notionUrls["link"])
 
 slackClient = slack.WebClient(token=os.environ["SLACK_TOKEN"])
-history = slackClient.conversations_history(channel=os.environ["SLACK_CHANNEL_ID"])
+history = slackClient.conversations_history(channel=allowedSlackChannels["material"])
 messages = history.get("messages")
 reversedMessages = reversed(messages)
 cnt = 0
@@ -41,12 +49,12 @@ for msgItem in reversedMessages:
                 postContentsCnt += 1
                 if postContentsCnt == 1:
                     newPostRow.ireum = postContent
-        if "ts" in msgItem:
-            permalink = slackClient.chat_getPermalink(
-                channel=os.environ["SLACK_CHANNEL_ID"], message_ts=msgItem.get("ts")
-            )
-            if permalink["ok"]:
-                newPostRow.slack_url = str(permalink["permalink"]).split("?")[0]
+        permalink = slackClient.chat_getPermalink(
+            channel=allowedSlackChannels.get("material"),
+            message_ts=msgItem.get("ts"),
+        )
+        if permalink.get("ok"):
+            newPostRow.slack_url = str(permalink.get("permalink"))
         postId = newPostRow.id
         if "attachments" in msgItem:
             linkIds = []
@@ -76,7 +84,7 @@ for msgItem in reversedMessages:
                 if "text" in atchItem:
                     linkContents = str(atchItem.get("text")).split("\n")
                     for linkContent in linkContents:
-                        if linkContents != "":
+                        if linkContent != "":
                             linkText = newLinkRow.children.add_new(TextBlock)
                             linkText.title = linkContent
                 linkIds.append(newLinkRow.id)

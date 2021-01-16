@@ -6,16 +6,20 @@ from pathlib import Path
 from flask import Flask
 import slack
 from slackeventsapi import SlackEventAdapter
-from dotenv import load_dotenv
 
-env_path = Path(".") / ".env"
-load_dotenv(dotenv_path=env_path)
+# from dotenv import load_dotenv
+
+# env_path = Path(".") / ".env"
+# load_dotenv(dotenv_path=env_path)
 
 notionUrls = {
     "post": "https://www.notion.so/prsmlab/2057ce5fa809459684ca8e51c4b6d461?v=c05502589aa34e10bb3004318c84916c",
     "link": "https://www.notion.so/prsmlab/83b8a8e236cc48e0a5aefba419730411?v=00b41d9014234f5d80b4bb92b88ac5cd",
 }
-allowedSlackChannels = {"material": "C01F9G7KL07", "experiment": "C01ETM1P4BH"}
+allowedSlackChannels = {
+    "material": "C01F9G7KL07"
+    # , "experiment": "C01ETM1P4BH"
+}
 notionPostProps = ["authored", "slack_url", "related_links", "ireum"]
 notionLinkProps = [
     "translation",
@@ -67,10 +71,9 @@ def message(payload):
                     permalink = slackClient.chat_getPermalink(
                         channel=channel, message_ts=message.get("ts")
                     )
-                    postId = ""
-                    if permalink["ok"]:
-                        newPostRow.slack_url = str(permalink["permalink"]).split("?")[0]
-                        postId = newPostRow.id
+                    if permalink.get("ok"):
+                        newPostRow.slack_url = str(permalink.get("permalink"))
+                    postId = newPostRow.id
                     linkIds = []
                     attachments = message.get("attachments")
                     for atchItem in attachments:
