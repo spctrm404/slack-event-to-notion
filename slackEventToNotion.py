@@ -55,13 +55,13 @@ def message(payload):
             message = event.get("message")
             client_msg_id = str(message.get("client_msg_id"))
             gate = client_msg_id not in ignoreList
-            print("complete: " + str(cnt))
+            print("outside: " + str(cnt))
             print("client_msg_id:" + client_msg_id)
             print("ignoreList:" + str(ignoreList))
             print("gate:" + str(gate))
             if gate:
                 ignoreList.append(client_msg_id)
-                print("complete: " + str(cnt))
+                print("inside: " + str(cnt))
                 print("ignoreList(add):" + str(ignoreList))
                 if len(ignoreList) > 8:
                     ignoreList.pop(0)
