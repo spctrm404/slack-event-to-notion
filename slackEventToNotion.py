@@ -45,19 +45,19 @@ slack_event_adapter = SlackEventAdapter(environ["SIGNING_SECRET"], "/slack/event
 slackClient = slack.WebClient(token=environ["SLACK_TOKEN"])
 
 ignoreList = []
-cnt = 0
+listCnt = 0
 eventList = []
 
 
 def eventProcess():
     global eventList
     if len(eventList) > 0:
-        print("processBegin")
-        print("size:" + str(len(eventList)))
+        print("PROCESS BEGIN")
+        print("<O> size:" + str(len(eventList)))
         event = eventList.pop(0)
         message = event.get("message")
         client_msg_id = str(message.get("client_msg_id"))
-        print("processing:" + client_msg_id)
+        print("<I> processing:" + client_msg_id)
         channel = event.get("channel")
         if channel in allowedSlackChannels.values():
             postContentsCnt = 0
@@ -110,15 +110,15 @@ def eventProcess():
                             linkText.title = linkContent
                 linkIds.append(newLinkRow.id)
             newPostRow.related_links = linkIds
-            print("procesDone")
-        print("size:" + str(len(eventList)))
-        print("processEnd")
+            print("PROCESS DONE")
+        print("<C> size:" + str(len(eventList)))
+        print("PROCESS END")
 
 
 @slack_event_adapter.on("message")
 def message(payload):
     global ignoreList
-    global cnt
+    global listCnt
     global eventList
     event = payload.get("event")
     if "subtype" in event:
@@ -126,20 +126,20 @@ def message(payload):
             message = event.get("message")
             client_msg_id = str(message.get("client_msg_id"))
             gate = client_msg_id not in ignoreList
-            print("counter(out): " + str(cnt))
-            print("client_msg_id:" + client_msg_id)
-            print("ignoreList:" + str(ignoreList))
-            print("gate:" + str(gate))
+            print("<O> counter: " + str(listCnt))
+            print("<O> client_msg_id:" + client_msg_id)
+            print("<O> ignoreList:" + str(ignoreList))
+            print("<O> gate:" + str(gate))
             if gate:
                 ignoreList.append(client_msg_id)
                 eventList.append(event)
-                print("counter(in): " + str(cnt))
-                print("ignoreList(add):" + str(ignoreList))
+                print("<I> counter(in): " + str(listCnt))
+                print("<I> ignoreList(add):" + str(ignoreList))
                 if len(ignoreList) > 8:
                     ignoreList.pop(0)
-                    print("ignoreList(del):" + str(ignoreList))
-                cnt += 1
-                print("counter(fin): " + str(cnt))
+                    print("<I> ignoreList(del):" + str(ignoreList))
+                listCnt += 1
+                print("<C> counter: " + str(listCnt))
                 threading.Timer(5, eventProcess).start()
 
 
