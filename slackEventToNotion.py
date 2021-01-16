@@ -1,14 +1,16 @@
 from notion.block import TextBlock
 from notion.client import NotionClient
-import slack
 import os
+from os import environ
 from pathlib import Path
-from dotenv import load_dotenv
 from flask import Flask
+import slack
 from slackeventsapi import SlackEventAdapter
 
-env_path = Path(".") / ".env"
-load_dotenv(dotenv_path=env_path)
+# from dotenv import load_dotenv
+
+# env_path = Path(".") / ".env"
+# load_dotenv(dotenv_path=env_path)
 
 notionPostProps = ["authored", "slack_url", "related_links", "ireum"]
 notionLinkProps = [
@@ -22,16 +24,14 @@ notionLinkProps = [
     "authored",
     "ireum",
 ]
-notionClient = NotionClient(token_v2=os.environ["NOTION_TOKEN"])
-postCollection = notionClient.get_collection_view(os.environ["POST_URL"])
-linkCollection = notionClient.get_collection_view(os.environ["LINK_URL"])
+notionClient = NotionClient(token_v2=environ["NOTION_TOKEN"])
+postCollection = notionClient.get_collection_view(environ["POST_URL"])
+linkCollection = notionClient.get_collection_view(environ["LINK_URL"])
 
 app = Flask(__name__)
-slack_event_adapter = SlackEventAdapter(
-    os.environ["SIGNING_SECRET"], "/slack/events", app
-)
+slack_event_adapter = SlackEventAdapter(environ["SIGNING_SECRET"], "/slack/events", app)
 
-slackClient = slack.WebClient(token=os.environ["SLACK_TOKEN"])
+slackClient = slack.WebClient(token=environ["SLACK_TOKEN"])
 
 ignoreList = []
 
@@ -43,7 +43,7 @@ def message(payload):
     eventSubtype = event.get("subtype")
     if (
         eventSubtype == "message_changed"
-        and eventChannel == os.environ["SLACK_CHANNEL_ID"]
+        and eventChannel == environ["SLACK_CHANNEL_ID"]
     ):
         msgItem = event.get("message")
         client_msg_id = str(msgItem.get("client_msg_id"))
