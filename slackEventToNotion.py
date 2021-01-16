@@ -49,7 +49,7 @@ def message(payload):
         and client_msg_id not in ignoreList
     ):
         ignoreList.append(client_msg_id)
-        if len(ignoreList) > 10:
+        if len(ignoreList) > 1024:
             ignoreList.pop(0)
         postContentsCnt = 0
         postContents = str(msgItem.get("text")).split("\n")
