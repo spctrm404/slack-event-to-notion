@@ -47,6 +47,8 @@ gate = True
 
 @slack_event_adapter.on("message")
 def message(payload):
+    global gate
+    global ignoreList
     event = payload.get("event")
     if "subtype" in event:
         if event.get("subtype") == "message_changed":
@@ -57,7 +59,6 @@ def message(payload):
                 if len(ignoreList) > 1024:
                     ignoreList.pop(0)
                 if gate:
-                    global gate
                     gate = False
                     print(str(len(ignoreList)) + " : " + str(client_msg_id))
                     channel = event.get("channel")
