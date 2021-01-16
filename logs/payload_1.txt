@@ -1,0 +1,28 @@
+{
+  'client_msg_id': '76130d5b-3009-4741-98f7-87630293c2bf',
+  'type': 'message',
+  'text': '<https://www.youtube.com/watch?v=MK6VC_JxtE4>\n봇 테스트2',
+  'user': 'U01FW5HMVL0',
+  'ts': '1610797263.001000',
+  'team': 'T01F6G7VBD1',
+  'blocks': [{'type': 'rich_text', 'block_id': 'ao4H', 'elements': [{'type': 'rich_text_section', 'elements': [{'type': 'link', 'url': 'https://www.youtube.com/watch?v=MK6VC_JxtE4'}, {'type': 'text', 'text': '\n봇 테스트2'}]}]}],
+  'channel': 'C01ETM1P4BH',
+  'event_ts': '1610797263.001000',
+  'channel_type': 'channel'}
+127.0.0.1 - - [16/Jan/2021 20:41:03] "POST /slack/events HTTP/1.1" 200 -
+
+{
+  'type': 'message',
+  'subtype': 'message_changed',
+  'hidden': True,
+  'message': {'client_msg_id': '76130d5b-3009-4741-98f7-87630293c2bf', 'type': 'message', 'text': '<https://www.youtube.com/watch?v=MK6VC_JxtE4>\n봇 테스트2', 'user': 'U01FW5HMVL0', 'team': 'T01F6G7VBD1', 'attachments': [{'service_name': 'YouTube', 'service_url': 'https://www.youtube.com/', 'title': 'Times New Roman— Graphic Design History 101', 'title_link': 'https://www.youtube.com/watch?v=MK6VC_JxtE4', 'author_name': 'The Futur Academy', 'author_link': 'https://www.youtube.com/channel/UCqHuGF2axS8Yf89r1tUVS_A', 'thumb_url': 'https://i.ytimg.com/vi/MK6VC_JxtE4/hqdefault.jpg', 'thumb_width': 480, 'thumb_height': 360, 'fallback': 'YouTube Video: Times New Roman— Graphic Design History 101', 'video_html': '<iframe width="400" height="225" src="https://www.youtube.com/embed/MK6VC_JxtE4?feature=oembed&autoplay=1&iv_load_policy=3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>', 'video_html_width': 400, 'video_html_height': 225, 'from_url': 'https://www.youtube.com/watch?v=MK6VC_JxtE4', 'service_icon': 'https://a.slack-edge.com/80588/img/unfurl_icons/youtube.png', 'id': 1, 'original_url': 'https://www.youtube.com/watch?v=MK6VC_JxtE4'}], 'blocks': [{'type': 'rich_text', 'block_id': 'ao4H', 'elements': [{'type': 'rich_text_section', 'elements': [{'type': 'link', 'url': 'https://www.youtube.com/watch?v=MK6VC_JxtE4'}, {'type': 'text', 'text': '\n봇 테스트2'}]}]}], 'ts': '1610797263.001000'},
+  'channel': 'C01ETM1P4BH',
+  'previous_message': {'client_msg_id': '76130d5b-3009-4741-98f7-87630293c2bf', 'type': 'message', 'text': '<https://www.youtube.com/watch?v=MK6VC_JxtE4>\n봇 테스트2', 'user': 'U01FW5HMVL0', 'ts': '1610797263.001000', 'team': 'T01F6G7VBD1', 'blocks': [{'type': 'rich_text', 'block_id': 'ao4H', 'elements': [{'type': 'rich_text_section', 'elements': [{'type': 'link', 'url': 'https://www.youtube.com/watch?v=MK6VC_JxtE4'}, {'type': 'text', 'text': '\n봇 테스트2'}]}]}]},
+  'event_ts': '1610797264.001100',
+  'ts': '1610797264.001100',
+  'channel_type': 'channel'}
+127.0.0.1 - - [16/Jan/2021 20:41:04] "POST /slack/events HTTP/1.1" 200 -
+
+{'type': 'message', 'subtype': 'message_changed', 'hidden': True, 'message': {'client_msg_id': 'eda7c953-552b-43c3-8c82-92ed624a6e1b', 'type': 'message', 'text': '<https://www.youtube.com/watch?v=VFAkgNpAVSo>\n봇테스트', 'user': 'U01FW5HMVL0', 'team': 'T01F6G7VBD1', 'attachments': [{'service_name': 'YouTube', 'service_url': 'https://www.youtube.com/', 'title': 'Portfolio Tips – Reviewing YOUR Design Work – Part 1', 'title_link': 'https://www.youtube.com/watch?v=VFAkgNpAVSo', 'author_name': 'The Futur Academy', 'author_link': 'https://www.youtube.com/c/TheFuturAcademy', 'thumb_url': 'https://i.ytimg.com/vi/VFAkgNpAVSo/hqdefault.jpg', 'thumb_width': 480, 'thumb_height': 360, 'fallback': 'YouTube Video: Portfolio Tips – Reviewing YOUR Design Work – Part 1', 'video_html': '<iframe width="400" height="225" src="https://www.youtube.com/embed/VFAkgNpAVSo?feature=oembed&autoplay=1&iv_load_policy=3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>', 'video_html_width': 400, 'video_html_height': 225, 'from_url': 'https://www.youtube.com/watch?v=VFAkgNpAVSo', 
+'service_icon': 'https://a.slack-edge.com/80588/img/unfurl_icons/youtube.png', 'id': 1, 'original_url': 'https://www.youtube.com/watch?v=VFAkgNpAVSo'}], 'blocks': [{'type': 'rich_text', 'block_id': 'eA+', 'elements': [{'type': 'rich_text_section', 'elements': [{'type': 'link', 'url': 'https://www.youtube.com/watch?v=VFAkgNpAVSo'}, {'type': 'text', 'text': '\n봇테스트'}]}]}], 'ts': '1610797213.000600'}, 'channel': 'C01ETM1P4BH', 'previous_message': {'client_msg_id': 'eda7c953-552b-43c3-8c82-92ed624a6e1b', 'type': 'message', 'text': '<https://www.youtube.com/watch?v=VFAkgNpAVSo>\n봇테스트', 'user': 'U01FW5HMVL0', 'ts': '1610797213.000600', 'team': 'T01F6G7VBD1', 'blocks': [{'type': 'rich_text', 'block_id': 'eA+', 'elements': [{'type': 'rich_text_section', 'elements': [{'type': 'link', 'url': 'https://www.youtube.com/watch?v=VFAkgNpAVSo'}, {'type': 'text', 'text': '\n봇테스트'}]}]}]}, 'event_ts': '1610797214.000700', 'ts': '1610797214.000700', 'channel_type': 'channel'}
+127.0.0.1 - - [16/Jan/2021 20:41:21] "POST /slack/events HTTP/1.1" 200 -
