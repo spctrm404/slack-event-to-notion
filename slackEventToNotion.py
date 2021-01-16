@@ -51,15 +51,16 @@ def message(payload):
     global ignoreList
     event = payload.get("event")
     if "subtype" in event:
-        if event.get("subtype") == "message_changed":
-            message = event.get("message")
-            client_msg_id = message.get("client_msg_id")
-            if client_msg_id not in ignoreList:
-                ignoreList.append(client_msg_id)
-                if len(ignoreList) > 1024:
-                    ignoreList.pop(0)
-                if gate:
-                    gate = False
+        if gate:
+            gate = False
+            if event.get("subtype") == "message_changed":
+                message = event.get("message")
+                client_msg_id = message.get("client_msg_id")
+                if client_msg_id not in ignoreList:
+                    ignoreList.append(client_msg_id)
+                    if len(ignoreList) > 1024:
+                        ignoreList.pop(0)
+
                     print(str(len(ignoreList)) + " : " + str(client_msg_id))
                     channel = event.get("channel")
                     if channel in allowedSlackChannels.values():
@@ -119,7 +120,7 @@ def message(payload):
                                         linkText.title = linkContent
                             linkIds.append(newLinkRow.id)
                         newPostRow.related_links = linkIds
-                    gate = True
+            gate = True
 
 
 if __name__ == "__main__":
