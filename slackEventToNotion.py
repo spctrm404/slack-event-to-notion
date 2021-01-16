@@ -74,7 +74,7 @@ def message(payload):
             for atchItem in attachments:
                 newLinkRow = linkCollection.collection.add_row()
                 newLinkRow.translation = "번역없음"
-                newLinkRow.related_posts = [postId]
+                newLinkRow.slack_message = [postId]
                 if "author_name" in atchItem:
                     newLinkRow.author = str(atchItem.get("author_name"))
                 if "original_url" in atchItem:
