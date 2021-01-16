@@ -1,1 +1,1 @@
-worker: python slackEventToNotion.py
+web: gunicorn slackEventToNotion:app
