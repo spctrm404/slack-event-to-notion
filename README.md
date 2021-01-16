@@ -1,0 +1,2 @@
+# slack-event-to-notion
+ 
