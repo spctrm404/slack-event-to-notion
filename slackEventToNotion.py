@@ -55,7 +55,7 @@ def message(payload):
                 ignoreList.append(client_msg_id)
                 if len(ignoreList) > 1024:
                     ignoreList.pop(0)
-                print(event)
+                print(str(len(ignoreList)) + " : " + str(client_msg_id))
                 channel = event.get("channel")
                 if channel in allowedSlackChannels.values():
                     postContentsCnt = 0
