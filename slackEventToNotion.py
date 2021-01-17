@@ -19,7 +19,10 @@ notionUrls = {
     "post": "https://www.notion.so/prsmlab/2057ce5fa809459684ca8e51c4b6d461?v=c05502589aa34e10bb3004318c84916c",
     "link": "https://www.notion.so/prsmlab/83b8a8e236cc48e0a5aefba419730411?v=00b41d9014234f5d80b4bb92b88ac5cd",
 }
-allowedSlackChannels = {"material": "C01F9G7KL07", "experiment": "C01ETM1P4BH"}
+allowedSlackChannels = {
+    "material": "C01F9G7KL07"
+    # , "experiment": "C01ETM1P4BH"
+}
 notionPostProps = ["authored", "slack_url", "related_links", "ireum"]
 notionLinkProps = [
     "translation",
@@ -52,9 +55,10 @@ eventProcessGate = True
 def eventProcess():
     global eventProcessGate
     print("eventProcess() BEGIN")
+    print("<O> eventProcessGate: " + str(eventProcessGate))
     if eventProcessGate:
         eventProcessGate = False
-        print("<I> eventProcessGate: " + str(eventProcessGate))
+        print("eventProcess() PASS eventProcessGate")
         print("<I> len(eventList): " + str(len(eventList)))
         if len(eventList) > 0:
             event = eventList.pop(0)
@@ -63,6 +67,7 @@ def eventProcess():
             print("<I> client_msg_id:" + client_msg_id)
             channel = event.get("channel")
             if channel in allowedSlackChannels.values():
+                print("eventProcess() PASS channel in allowedSlackChannels.values()")
                 postContentsCnt = 0
                 postContents = str(message.get("text")).split("\n")
                 newPostRow = postCollection.collection.add_row()
@@ -121,9 +126,8 @@ def eventProcess():
             print("<C> len(eventList): " + str(len(eventList)))
         eventProcessGate = True
     else:
-        threading.Timer(5, eventProcess).start()
+        threading.Timer(10, eventProcess).start()
         print("eventProcess() POSTPONED")
-    print("<C>gate: " + str(eventProcessGate))
     print("eventProcess() END")
 
 
@@ -142,6 +146,7 @@ def message(payload):
             print("<O> ignoreList:" + str(ignoreList))
             print("<O> gate:" + str(gate))
             if gate:
+                print("message() PASS gate")
                 ignoreList.append(client_msg_id)
                 eventList.append(event)
                 print("<I> ignoreList(add):" + str(ignoreList))
@@ -151,6 +156,7 @@ def message(payload):
                 listProcessCounter += 1
                 print("<C> listProcessCounter: " + str(listProcessCounter))
                 threading.Timer(5, eventProcess).start()
+                print("message() DONE")
             print("message() END")
 
 
