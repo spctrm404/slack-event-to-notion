@@ -45,80 +45,94 @@ slack_event_adapter = SlackEventAdapter(environ["SIGNING_SECRET"], "/slack/event
 slackClient = slack.WebClient(token=environ["SLACK_TOKEN"])
 
 ignoreList = []
-listCnt = 0
+listProcessCounter = 0
 eventList = []
+eventProcessGate = True
 
 
 def eventProcess():
     global eventList
-    if len(eventList) > 0:
-        print("PROCESS BEGIN")
-        print("<O> size:" + str(len(eventList)))
-        event = eventList.pop(0)
-        message = event.get("message")
-        client_msg_id = str(message.get("client_msg_id"))
-        print("<I> processing:" + client_msg_id)
-        channel = event.get("channel")
-        if channel in allowedSlackChannels.values():
-            postContentsCnt = 0
-            postContents = str(message.get("text")).split("\n")
-            newPostRow = postCollection.collection.add_row()
-            for postContent in postContents:
-                if postContent != "":
-                    postText = newPostRow.children.add_new(TextBlock)
-                    postText.title = postContent
-                    postContentsCnt += 1
-                    if postContentsCnt == 1:
-                        newPostRow.ireum = postContent
-            permalink = slackClient.chat_getPermalink(
-                channel=channel, message_ts=message.get("ts")
-            )
-            if permalink.get("ok"):
-                newPostRow.slack_url = str(permalink.get("permalink"))
-            postId = newPostRow.id
-            linkIds = []
-            attachments = message.get("attachments")
-            for atchItem in attachments:
-                newLinkRow = linkCollection.collection.add_row()
-                newLinkRow.translation = "번역없음"
-                newLinkRow.slack_message = [postId]
-                if "author_name" in atchItem:
-                    newLinkRow.author = str(atchItem.get("author_name"))
-                if "original_url" in atchItem:
-                    newLinkRow.url = str(atchItem.get("original_url"))
-                if "title" in atchItem:
-                    newLinkRow.ireum = str(atchItem.get("title"))
-                if "service_icon" in atchItem:
-                    newLinkRow.set(
-                        "format.page_icon",
-                        str(atchItem.get("service_icon")),
-                    )
-                if "image_url" in atchItem:
-                    newLinkRow.set("format.page_cover", str(atchItem.get("image_url")))
-                elif "thumb_url" in atchItem:
-                    newLinkRow.set("format.page_cover", str(atchItem.get("thumb_url")))
-                elif "service_icon" in atchItem:
-                    newLinkRow.set(
-                        "format.page_cover",
-                        str(atchItem.get("service_icon")),
-                    )
-                if "text" in atchItem:
-                    linkContents = str(atchItem.get("text")).split("\n")
-                    for linkContent in linkContents:
-                        if linkContent != "":
-                            linkText = newLinkRow.children.add_new(TextBlock)
-                            linkText.title = linkContent
-                linkIds.append(newLinkRow.id)
-            newPostRow.related_links = linkIds
-            print("PROCESS DONE")
-        print("<C> size:" + str(len(eventList)))
-        print("PROCESS END")
+    global eventProcessGate
+    print("eventProcess() BEGIN")
+    if eventProcessGate:
+        eventProcessGate = False
+        print("<I> eventProcessGate: " + str(eventProcessGate))
+        print("<I> len(eventList): " + str(len(eventList)))
+        if len(eventList) > 0:
+            event = eventList.pop(0)
+            message = event.get("message")
+            client_msg_id = str(message.get("client_msg_id"))
+            print("<I> client_msg_id:" + client_msg_id)
+            channel = event.get("channel")
+            if channel in allowedSlackChannels.values():
+                postContentsCnt = 0
+                postContents = str(message.get("text")).split("\n")
+                newPostRow = postCollection.collection.add_row()
+                for postContent in postContents:
+                    if postContent != "":
+                        postText = newPostRow.children.add_new(TextBlock)
+                        postText.title = postContent
+                        postContentsCnt += 1
+                        if postContentsCnt == 1:
+                            newPostRow.ireum = postContent
+                permalink = slackClient.chat_getPermalink(
+                    channel=channel, message_ts=message.get("ts")
+                )
+                if permalink.get("ok"):
+                    newPostRow.slack_url = str(permalink.get("permalink"))
+                postId = newPostRow.id
+                linkIds = []
+                attachments = message.get("attachments")
+                for atchItem in attachments:
+                    newLinkRow = linkCollection.collection.add_row()
+                    newLinkRow.translation = "번역없음"
+                    newLinkRow.slack_message = [postId]
+                    if "author_name" in atchItem:
+                        newLinkRow.author = str(atchItem.get("author_name"))
+                    if "original_url" in atchItem:
+                        newLinkRow.url = str(atchItem.get("original_url"))
+                    if "title" in atchItem:
+                        newLinkRow.ireum = str(atchItem.get("title"))
+                    if "service_icon" in atchItem:
+                        newLinkRow.set(
+                            "format.page_icon",
+                            str(atchItem.get("service_icon")),
+                        )
+                    if "image_url" in atchItem:
+                        newLinkRow.set(
+                            "format.page_cover", str(atchItem.get("image_url"))
+                        )
+                    elif "thumb_url" in atchItem:
+                        newLinkRow.set(
+                            "format.page_cover", str(atchItem.get("thumb_url"))
+                        )
+                    elif "service_icon" in atchItem:
+                        newLinkRow.set(
+                            "format.page_cover",
+                            str(atchItem.get("service_icon")),
+                        )
+                    if "text" in atchItem:
+                        linkContents = str(atchItem.get("text")).split("\n")
+                        for linkContent in linkContents:
+                            if linkContent != "":
+                                linkText = newLinkRow.children.add_new(TextBlock)
+                                linkText.title = linkContent
+                    linkIds.append(newLinkRow.id)
+                newPostRow.related_links = linkIds
+                print("eventProcess() DONE")
+            print("<C> len(eventList): " + str(len(eventList)))
+        eventProcessGate = True
+    else:
+        threading.Timer(5, eventProcess).start()
+        print("eventProcess() POSTPONED")
+    print("<C>gate: " + str(eventProcessGate))
+    print("eventProcess() END")
 
 
 @slack_event_adapter.on("message")
 def message(payload):
     global ignoreList
-    global listCnt
+    global listProcessCounter
     global eventList
     event = payload.get("event")
     if "subtype" in event:
@@ -126,21 +140,22 @@ def message(payload):
             message = event.get("message")
             client_msg_id = str(message.get("client_msg_id"))
             gate = client_msg_id not in ignoreList
-            print("<O> counter: " + str(listCnt))
+            print("message() BEGIN")
+            print("<O> listProcessCounter: " + str(listProcessCounter))
             print("<O> client_msg_id:" + client_msg_id)
             print("<O> ignoreList:" + str(ignoreList))
             print("<O> gate:" + str(gate))
             if gate:
                 ignoreList.append(client_msg_id)
                 eventList.append(event)
-                print("<I> counter(in): " + str(listCnt))
                 print("<I> ignoreList(add):" + str(ignoreList))
                 if len(ignoreList) > 8:
                     ignoreList.pop(0)
                     print("<I> ignoreList(del):" + str(ignoreList))
-                listCnt += 1
-                print("<C> counter: " + str(listCnt))
+                listProcessCounter += 1
+                print("<C> listProcessCounter: " + str(listProcessCounter))
                 threading.Timer(5, eventProcess).start()
+            print("message() END")
 
 
 if __name__ == "__main__":
