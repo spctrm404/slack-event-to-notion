@@ -1,5 +1,3 @@
-# https://slack-event-to-notion.herokuapp.com/slack/events
-
 from notion.block import TextBlock
 from notion.client import NotionClient
 from os import environ
