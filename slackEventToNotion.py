@@ -19,10 +19,7 @@ notionUrls = {
     "post": "https://www.notion.so/prsmlab/2057ce5fa809459684ca8e51c4b6d461?v=c05502589aa34e10bb3004318c84916c",
     "link": "https://www.notion.so/prsmlab/83b8a8e236cc48e0a5aefba419730411?v=00b41d9014234f5d80b4bb92b88ac5cd",
 }
-allowedSlackChannels = {
-    "material": "C01F9G7KL07"
-    # , "experiment": "C01ETM1P4BH"
-}
+allowedSlackChannels = {"material": "C01F9G7KL07", "experiment": "C01ETM1P4BH"}
 notionPostProps = ["authored", "slack_url", "related_links", "ireum"]
 notionLinkProps = [
     "translation",
@@ -45,13 +42,14 @@ slack_event_adapter = SlackEventAdapter(environ["SIGNING_SECRET"], "/slack/event
 slackClient = slack.WebClient(token=environ["SLACK_TOKEN"])
 
 ignoreList = []
-listProcessCounter = 0
 eventList = []
+
+# gloval vars
+listProcessCounter = 0
 eventProcessGate = True
 
 
 def eventProcess():
-    global eventList
     global eventProcessGate
     print("eventProcess() BEGIN")
     if eventProcessGate:
@@ -131,9 +129,7 @@ def eventProcess():
 
 @slack_event_adapter.on("message")
 def message(payload):
-    global ignoreList
     global listProcessCounter
-    global eventList
     event = payload.get("event")
     if "subtype" in event:
         if event.get("subtype") == "message_changed":
