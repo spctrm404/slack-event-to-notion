@@ -2,18 +2,18 @@
 
 from notion.block import TextBlock
 from notion.client import NotionClient
-import os
 from os import environ
-from pathlib import Path
 from flask import Flask
 import slack
 from slackeventsapi import SlackEventAdapter
 import threading
 
-from dotenv import load_dotenv
+# no need at heroku
+# from dotenv import load_dotenv
+# from pathlib import Path
 
-env_path = Path(".") / ".env"
-load_dotenv(dotenv_path=env_path)
+# env_path = Path(".") / ".env"
+# load_dotenv(dotenv_path=env_path)
 
 notionUrls = {
     "post": "https://www.notion.so/prsmlab/2057ce5fa809459684ca8e51c4b6d461?v=c05502589aa34e10bb3004318c84916c",
