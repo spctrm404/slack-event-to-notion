@@ -66,6 +66,9 @@ def eventProcess():
             channel = event.get("channel")
             if channel in allowedSlackChannels.values():
                 print("eventProcess() PASS channel in allowedSlackChannels.values()")
+                print("MESSAGE BEGIN")
+                print(message)
+                print("MESSAGE END")
                 postContentsCnt = 0
                 postContents = str(message.get("text")).split("\n")
                 newPostRow = postCollection.collection.add_row()
